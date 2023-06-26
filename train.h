@@ -85,10 +85,11 @@ void gradient_descent(Net *net, double learning_rate, int num_epochs, double **t
                         Output_Neuron *current_neuron = (Output_Neuron*)&(current_layer->neurons[neuron_idx]);
                         //compute the gradients
 
-                        double *predicted_output = current_neuron->output;
-                        double *true_label = labels[sample];
-
-                        // com 
+                        double predicted_output = current_neuron->output;
+                        double true_label = labels[sample];
+                        
+                        double gradient = predicted_value - true_value;
+                        // directly update the  
                     }
 
                 }
@@ -96,6 +97,24 @@ void gradient_descent(Net *net, double learning_rate, int num_epochs, double **t
 
 
             //UPDATE WEIGHTS
+            //
+
+            for (int layer_idx = net->num_layers -1; layer_idx >0; layer_idx--){
+                Layer *current_layer = &(net->layers[layer_idx]);
+                Layer *prev_layer = &(net->layers[layer_idx -1]);
+
+                for(int neuron_idx = 0; neuron_idx < current_layer->num_neurons; neuron_idx++){
+                    Neuron *current_neuron = &(current_layer->neurons[neuron_idx]);
+
+                    //update
+                    for (int weight_idx = 0; weight_idx < current_neuron->num_inputs; weight_idx++){
+                        //calculate weigth w LR and grad
+                        //
+                        double weight_update = learning_rate * current_neuron->gradients[weight_idx];
+                        current_neuron->gradients[weight_idx] -= weight_update;
+                    }
+                }
+            }
         }
 
     }

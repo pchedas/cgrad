@@ -11,6 +11,7 @@ typedef struct {
     int num_inputs;
     int *weights;
     int output;
+    double *gradients;
     void (*init)(struct Neuron *neuron, int num_inputs);
     void (*propagate)(struct Neuron *neuron, char* activation_function);
 } Neuron;
@@ -20,7 +21,8 @@ typedef struct {
 	int num_inputs;
 	int *weights;
 	int *output;
-	void (*init)(struct Neuron *neuron, int num_inputs);
+    double *gradients;
+	void (*init)(struct Output_Neuron *neuron, int num_inputs);
     void (*softmax_propagate)(struct Neuron *neuron);
 } Output_Neuron;
 
@@ -33,8 +35,11 @@ void init_neuron(Neuron *neuron, int num_inputs){
     neuron->num_inputs = num_inputs;
     neuron->inputs = malloc(sizeof(int) * num_inputs);
     neuron->weights = malloc(sizeof(int) * num_inputs);
+    neuron->gradients = malloc(sizeof(double) * num_inputs);
     for(int i=0;i<num_inputs;i++){
         neuron->inputs[i]= rand()/RAND_MAX ;
+        neuron->gradients[i]= 0.0;
+        neuron->output = 0;
     }
 }
 
@@ -42,8 +47,12 @@ void init_output_neuron(Output_Neuron *neuron, int num_inputs){
     neuron->num_inputs = num_inputs;
     neuron->inputs = malloc(sizeof(int) * num_inputs);
     neuron->weights = malloc(sizeof(int) * num_inputs);
+    neuron->output = malloc(sizeof(int) * num_inputs);
+    neuron->gradients = malloc(sizeof(double) * num_inputs);
     for(int i=0;i<num_inputs;i++){
         neuron->inputs[i]= rand()/RAND_MAX ;
+        neuron->gradients[i] = 0.0;
+        neuron->output[i] = 0;
     }
 }
 
